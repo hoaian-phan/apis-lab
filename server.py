@@ -41,22 +41,37 @@ def find_afterparties():
     sort = request.args.get('sort', '')
 
     url = 'https://app.ticketmaster.com/discovery/v2/events'
-    payload = {'apikey': API_KEY}
+    payload = {'apikey': API_KEY,
+            'keyword': keyword,
+            'postalCode': postalcode,
+            'radius': radius,
+            'unit': unit,
+            'sort': sort
+    }
 
+    # import pdb; pdb.set_trace()
+    
+    res = requests.get(url, params=payload)
+
+    data = res.json()
+
+    #this is because we get a key error looking for '_embedded' in data when there are no results per the stated parameters
+   
+    if data["page"]["totalElements"] > 0:
+        events = data['_embedded']['events']
+    else:
+        events = []
+    
     # TODO: Make a request to the Event Search endpoint to search for events
     #
-    # - Use form data from the user to populate any search parameters
+    # - Use form data from the user to populate any search parameters DID THIS
     #
     # - Make sure to save the JSON data from the response to the `data`
     #   variable so that it can display on the page. This is useful for
-    #   debugging purposes!
+    #   debugging purposes! DONE THIS
     #
     # - Replace the empty list in `events` with the list of events from your
-    #   search results
-
-    data = {'Test': ['This is just some test data'],
-            'page': {'totalElements': 1}}
-    events = []
+    #   search results DONE THIS
 
     return render_template('search-results.html',
                            pformat=pformat,
